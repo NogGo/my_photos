@@ -1,0 +1,16 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                             http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+
+
+    <!--Service discovery-->
+    <!--<context-param>-->
+        <!--<param-name>WEB_SERVICES_REGISTRATION_CONFIGURATION_FILE_NAME</param-name>-->
+        <!--<param-value>rs-reg-conf.yaml</param-value>-->
+    <!--</context-param>-->
+    <!--<listener>-->
+        <!--<listener-class>ru.lanit.lkp.wfconsulwebregistrar.startup.ConsulRegistrarServletContextListener</listener-class>-->
+    <!--</listener>-->
+</web-app>
