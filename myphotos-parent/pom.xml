@@ -25,14 +25,14 @@
             <!-- == internal == -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>myphotos-ejb</artifactId>
-                <version>${project.version}</version>
-                <type>ejb</type>
+                <artifactId>myphotos-model</artifactId>
+                <version>1.0</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>myphotos-model</artifactId>
-                <version>1.0</version>
+                <artifactId>myphotos-common</artifactId>
+                <version>${project.version}</version>
                 <scope>provided</scope>
             </dependency>
             <!-- == central == -->
