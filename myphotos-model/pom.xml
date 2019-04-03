@@ -3,22 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>myphotos-parent</artifactId>
+        <groupId>ru.myphotos</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../myphotos-parent/pom.xml</relativePath>
+    </parent>
 
-    <groupId>ru.myphotos</groupId>
     <artifactId>myphotos-model</artifactId>
-    <version>1.0</version>
     <packaging>jar</packaging>
-
-    <properties>
-        <file.encoding>UTF-8</file.encoding>
-
-        <project.build.sourceEncoding>${file.encoding}</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>${file.encoding}</project.reporting.outputEncoding>
-
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.source>11</maven.compiler.source>
-
-    </properties>
 
     <dependencies>
         <dependency>

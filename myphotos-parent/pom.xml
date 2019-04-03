@@ -26,7 +26,7 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>myphotos-model</artifactId>
-                <version>1.0</version>
+                <version>${project.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -35,7 +35,7 @@
                 <version>${project.version}</version>
                 <scope>provided</scope>
             </dependency>
-            <!-- == central == -->
+            <!-- == from central == -->
             <dependency>
                 <groupId>javax</groupId>
                 <artifactId>javaee-api</artifactId>
