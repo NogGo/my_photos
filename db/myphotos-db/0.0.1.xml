@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+									   								   
+	<preConditions>
+        <dbms type="postgresql" />
+        <!--runningAs username="SYSTEM" /-->
+    </preConditions>								   
+
+	<!--============================-->
+    <!--========TABLESPACE==========-->
+	<!--============================-->
+
+			<!-- DEFAULT -->
+	
+	<!--============================-->
+    <!--= LOGIN/GROUP ROLES =======-->
+	<!--============================-->
+	
+	<changeSet author="Veryasov" id="20190404-001">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT count(*)
+                FROM pg_catalog.pg_user WHERE usename = 'myphotos'</sqlCheck>
+        </preConditions>
+        <comment>Создаём пользователя</comment>
+        <sql>CREATE USER myphotos WITH
+			  LOGIN
+			  NOSUPERUSER
+			  INHERIT
+			  NOCREATEDB
+			  NOCREATEROLE
+			  NOREPLICATION
+		</sql>
+        <rollback>DROP USER myphotos</rollback>
+    </changeSet>
+	
+	<!--============================-->
+    <!--=========DATABASE===========-->
+    <!--============================-->
+	
+	<changeSet author="Veryasov" id="20190404-002">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">SELECT count(*) FROM pg_database
+				WHERE datistemplate = false AND datname = 'myphotos'</sqlCheck>
+		</preConditions>
+		<comment>Создаём базу данных</comment>
+		<sql>CREATE DATABASE myphotos
+				WITH 
+				OWNER = myphotos
+				ENCODING = 'UTF8'
+				LC_COLLATE = 'Russian_Russia.1251'
+				LC_CTYPE = 'Russian_Russia.1251'
+				TABLESPACE = pg_default
+				CONNECTION LIMIT = -1;
+		</sql>
+		<rollback>DROP DATABASE myphotos</rollback>
+	</changeSet>
+	
+	<!--============================-->
+    <!--==========SCHEMA============-->
+    <!--============================-->
+	
+		<changeSet author="Veryasov" id="20190404-003">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">select count(*)
+			FROM information_schema.schemata WHERE schema_name = 'blog' 
+			AND schema_owner = 'myphotos'</sqlCheck>
+		</preConditions>
+		<comment>Создаём схему</comment>
+		<sql>CREATE SCHEMA blog
+				AUTHORIZATION myphotos
+		</sql>
+		<rollback>DROP SCHEMA blog</rollback>
+	</changeSet>
+			
+	<!--============================-->
+    <!--==========TABLES============-->
+    <!--============================-->
+	
+	<changeSet author="Veryasov" id="20190404-004">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="blog" tableName="profile"/>
+            </not>
+        </preConditions>
+        <comment>profile table</comment>
+        <sql>
+            CREATE TABLE blog.profile
+			(
+				id bigint NOT NULL,
+				uid character varying(255) COLLATE pg_catalog."default" NOT NULL,
+				email character varying(100) COLLATE pg_catalog."default" NOT NULL,
+				first_name character varying(60) COLLATE pg_catalog."default" NOT NULL,
+				last_name character varying(60) COLLATE pg_catalog."default" NOT NULL,
+				avatar_url character varying(255) COLLATE pg_catalog."default" NOT NULL,
+				job_title character varying(100) COLLATE pg_catalog."default" NOT NULL,
+				location character varying(100) COLLATE pg_catalog."default" NOT NULL,
+				photo_count integer NOT NULL DEFAULT 0,
+				created timestamp with time zone NOT NULL DEFAULT now(),
+				rating integer NOT NULL DEFAULT 0,
+				CONSTRAINT "Profile_pkey" PRIMARY KEY (id)
+			)
+			WITH (
+				OIDS = FALSE
+			)
+			TABLESPACE pg_default;
+
+			ALTER TABLE blog.profile
+				OWNER to myphotos;
+        </sql>
+    </changeSet>
+	
+	<changeSet author="Veryasov" id="20190404-006">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="blog" tableName="photo"/>
+            </not>
+        </preConditions>
+        <comment>photo table</comment>
+        <sql>
+            CREATE TABLE blog.photo
+			(
+				id bigint NOT NULL,
+				small_url character varying(255) COLLATE pg_catalog."default" NOT NULL,
+				large_url character varying(255) COLLATE pg_catalog."default" NOT NULL,
+				original_url character varying(255) COLLATE pg_catalog."default" NOT NULL,
+				views bigint NOT NULL DEFAULT 0,
+				downloads bigint NOT NULL DEFAULT 0,
+				created timestamp with time zone NOT NULL DEFAULT now(),
+				profile_id bigint NOT NULL,
+				CONSTRAINT "Photo_pkey" PRIMARY KEY (id),
+				CONSTRAINT "profile_FK" FOREIGN KEY (id)
+					REFERENCES blog.profile (id) MATCH SIMPLE
+					ON UPDATE RESTRICT
+					ON DELETE RESTRICT
+			)
+			WITH (
+				OIDS = FALSE
+			)
+			TABLESPACE pg_default;
+
+			ALTER TABLE blog.photo
+				OWNER to myphotos;
+        </sql>
+    </changeSet>
+	
+	<changeSet author="Veryasov" id="20190404-007">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="blog" tableName="accessToken"/>
+            </not>
+        </preConditions>
+        <comment>accessToken table</comment>
+        <sql>
+            CREATE TABLE blog.accessToken
+			(
+				token character varying COLLATE pg_catalog."default" NOT NULL,
+				profile_id bigint NOT NULL,
+				created timestamp with time zone NOT NULL DEFAULT now(),
+				CONSTRAINT "AccessToken_pkey" PRIMARY KEY (token),
+				CONSTRAINT "profile_FK" FOREIGN KEY (profile_id)
+					REFERENCES blog.profile (id) MATCH SIMPLE
+					ON UPDATE RESTRICT
+					ON DELETE RESTRICT
+			)
+			WITH (
+				OIDS = FALSE
+			)
+			TABLESPACE pg_default;
+
+			ALTER TABLE blog."accessToken"
+				OWNER to myphotos;
+        </sql>
+    </changeSet>
+	
+	<changeSet author="Veryasov" id="20190404-008">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists schemaName="blog" sequenceName="photo_seq"/>
+            </not>
+        </preConditions>
+        <createSequence schemaName="blog" sequenceName="photo_seq"/>
+    </changeSet>
+	
+	<changeSet author="Veryasov" id="20190404-009">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists schemaName="blog" sequenceName="profile_seq"/>
+            </not>
+        </preConditions>
+        <createSequence schemaName="blog" sequenceName="profile_seq"/>
+    </changeSet>
+	
+	<changeSet author="Veryasov" id="20190404-007">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="blog" tableName="accessToken"/>
+            </not>
+        </preConditions>
+        <comment>Crate FUNCTION </comment>
+        <sql>
+            CREATE OR REPLACE FUNCTION blog.update_rating(
+				)
+				RETURNS void
+				LANGUAGE 'sql'
+
+				COST 100
+				VOLATILE 
+			AS $BODY$UPDATE blog.profile SET rating = start.rating from
+				(SELECT profile_id, sum(views * downloads * 100) as rating FROM blog.photo GROUP BY profile_id) AS start
+				WHERE blog.profile.id=start.profile_id;$BODY$;
+
+			ALTER FUNCTION blog.update_rating()
+				OWNER TO myphotos;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

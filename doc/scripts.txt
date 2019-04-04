@@ -1,0 +1,56 @@
+﻿##########################
+#      Создание БД       #
+##########################
+Запускать из папки db/pg_smev/
+
+liquibase --driver=oracle.jdbc.driver.OracleDriver --classpath=./oracle_client_linux64/ojdbc6.jar --changeLogFile=./edo_operator_db/9.1.0.xml --url=jdbc:oracle:thin:@192.168.0.155:1521/fksCloseSupport.zakupki.gov.ru --username=system --password=system migrate
+
+
+
+##########################
+#           DS           #
+##########################
+
+Добавляем модуль:
+module add --name=com.oracle --resources=[path-to-driver]/ojdbc7.jar --dependencies=javax.api,javax.transaction.api
+
+Добавляем драйвер:
+/subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle, driver-module-name=com.oracle, driver-xa-datasource-class-name=oracle.jdbc.xa.client.OracleXADataSource)
+
+Добавляем датасорс:
+/subsystem=datasources/data-source=edoOperatorDS:add(jta="true",use-ccm="true",use-java-context="true",enabled="true",jndi-name=java:/jdbc/edoOperatorDS,max-pool-size=10,min-pool-size=5,flush-strategy="FailingConnectionOnly",driver-name=oracle,connection-url=jdbc:oracle:thin:@192.168.0.155:1521/fksCloseSupport.zakupki.gov.ru,user-name="EDO_OPERATOR_Z",password="EDO_OPERATOR_Z")
+
+##########################
+#     Многопоточка       #
+##########################
+
+Выполнить через cli wildfly для установки требуемых экзекьюторов.
+
+Параметры hung-task-threshold и keepalive-time можно выставить на свое усмотрение
+(hung-task-threshold - время после истечению которого поток считается зависшим)
+
+Шедулеры:
+
+/subsystem=ee/managed-scheduled-executor-service=processIncomingTask:add(jndi-name=java\:jboss\/ee\/executor\/edo\/processIncomingTask, context-service=default, hung-task-threshold=60000, keepalive-time=3000)
+java:jboss/ee/scheduler/edo/adapterEdo
+
+Обычные таски:
+
+/subsystem=ee/managed-executor-service=lkpMessageTask:add(jndi-name=java\:jboss\/ee\/executor\/lkp\/messageTask, core-threads=2, max-threads=50, hung-task-threshold=60000, keepalive-time=3000)
+/subsystem=ee/managed-executor-service=lkpInnerResendTask:add(jndi-name=java\:jboss\/ee\/executor\/lkp\/innerResendTask, core-threads=2, max-threads=50, hung-task-threshold=60000, keepalive-time=3000)
+
+
+java:jboss/ee/executor/edo/edoSenderTask
+/subsystem=ee/managed-executor-service=edoSenderTask:add(jndi-name=java\:jboss\/ee\/executor\/edo\/edoSenderTask, core-threads=5, max-threads=50, hung-task-threshold=60000, keepalive-time=3000)
+
+java:jboss/ee/executor/edo/edoHandleTask
+/subsystem=ee/managed-executor-service=edoHandleTask:add(jndi-name=java\:jboss\/ee\/executor\/edo\/edoHandleTask, core-threads=2, max-threads=50, hung-task-threshold=60000, keepalive-time=3000)
+
+java:jboss/ee/executor/edo/edoCheckerTask
+/subsystem=ee/managed-executor-service=edoCheckerTask:add(jndi-name=java\:jboss\/ee\/executor\/edo\/edoCheckerTask, core-threads=4, max-threads=50, hung-task-threshold=60000, keepalive-time=3000)
+##########################
+#     info		 #
+##########################
+
+pg_dump.exe -U myphotos -W myphotos > myphotos-dump.sql
+C:\PostgreSQL\pg10\bin\pg_dump.exe
