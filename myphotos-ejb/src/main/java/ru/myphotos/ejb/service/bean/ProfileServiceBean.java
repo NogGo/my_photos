@@ -26,16 +26,16 @@ public class ProfileServiceBean implements ProfileService{
     private ProfileRepository profileRepository;
 
     @Override
-    public Profile findById(Long id) throws ru.myphotos.exception.ObjectNotFoundException {
+    public Profile findById(Long id) throws ObjectNotFoundException {
         Optional<Profile> profile = profileRepository.findById(id);
         if (!profile.isPresent()) {
-            throw new ru.myphotos.exception.ObjectNotFoundException(String.format("Profile not found by id: %s", id));
+            throw new ObjectNotFoundException(String.format("Profile not found by id: %s", id));
         }
         return profile.get();
     }
 
     @Override
-    public Profile findByUid(String uid) throws ru.myphotos.exception.ObjectNotFoundException {
+    public Profile findByUid(String uid) throws ObjectNotFoundException {
         Optional<Profile> profile = profileRepository.findByUid(uid);
         if (!profile.isPresent()) {
             throw new ObjectNotFoundException(String.format("Profile not found by uid: %s", uid));

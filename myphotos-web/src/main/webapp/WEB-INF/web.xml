@@ -1,16 +1,12 @@
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-                             http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5">
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
 
-
-    <!--Service discovery-->
-    <!--<context-param>-->
-        <!--<param-name>WEB_SERVICES_REGISTRATION_CONFIGURATION_FILE_NAME</param-name>-->
-        <!--<param-value>rs-reg-conf.yaml</param-value>-->
-    <!--</context-param>-->
-    <!--<listener>-->
-        <!--<listener-class>ru.lanit.lkp.wfconsulwebregistrar.startup.ConsulRegistrarServletContextListener</listener-class>-->
-    <!--</listener>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>CurrentRequestFilter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
 </web-app>
