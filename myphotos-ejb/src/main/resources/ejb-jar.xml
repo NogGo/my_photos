@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+     http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+        version="3.1">
+
+    <!-- module-name что бы в портируемом jndi не было версии проекта, а просто: -->
+    <module-name>myphotos-ejb</module-name>
+    <!-- это что бы наш эксепшен не обварачивался в EJB контейнере -->
+    <!-- иои проставить applicationException аннотацию с атрибутами -->
+    <assembly-descriptor>
+        <application-exception>
+            <exception-class>ru.myphotos.exception.ApplicationException</exception-class>
+            <rollback>true</rollback>
+            <!-- inherited и любой его подкласс. Откатываются! -->
+            <inherited>true</inherited>
+        </application-exception>
+    </assembly-descriptor>
+</ejb-jar>

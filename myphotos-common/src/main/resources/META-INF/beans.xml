@@ -1,7 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
-       bean-discovery-mode="annotated" version="1.1">
+       bean-discovery-mode="annotated" version="1.2">
+
+    <!-- Либа - компонент -->
+
+    <!--  bean-discovery-mode="annotated" - работает для WF, на TomCat не робит -->
+
+    <!-- Исключать @Vetoed или : -->
     <!--<scan>-->
         <!--<exclude name="net.devstudy.myphotos.common.config.*" />-->
         <!--<exclude name="net.devstudy.myphotos.common.converter.*" />-->
