@@ -1,4 +1,4 @@
-package ru.myphotos.controller;
+package ru.myphotos.web.controller;
 
 import ru.myphotos.model.Pageable;
 import ru.myphotos.model.SortMode;
@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.myphotos.util.RoutingUtils.forwardToPage;
+import static ru.myphotos.web.util.RoutingUtils.forwardToPage;
 import static ru.myphotos.web.Constants.PHOTO_LIMIT;
 
 @WebServlet(urlPatterns = "/", loadOnStartup = 1)

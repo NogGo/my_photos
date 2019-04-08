@@ -1,4 +1,4 @@
-package ru.myphotos.controller;
+package ru.myphotos.web.controller;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

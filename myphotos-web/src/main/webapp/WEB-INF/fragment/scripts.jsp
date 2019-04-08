@@ -1,7 +1,3 @@
-<%--
-    Author       : devstudy,
-    Organization : </>DevStudy.net
---%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/jquery.poptrox.min.js"></script>

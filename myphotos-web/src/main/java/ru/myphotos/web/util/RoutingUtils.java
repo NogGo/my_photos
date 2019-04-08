@@ -1,4 +1,4 @@
-package ru.myphotos.util;
+package ru.myphotos.web.util;
 
 import java.io.IOException;
 import java.io.Writer;
